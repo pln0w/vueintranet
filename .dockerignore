@@ -1,0 +1,12 @@
+.git
+.idea
+.env
+
+backend/node_modules
+backend/bower_components
+frontend/node_modules
+frontend/bower_components
+backend/vendor
+backend/storage/framework/cache/**
+backend/storage/framework/sessions/**
+backend/storage/framework/views/*

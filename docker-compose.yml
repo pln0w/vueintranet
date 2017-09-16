@@ -1,0 +1,111 @@
+version: '2'
+
+services:
+
+  ####################################
+  #             STORAGE              #
+  ####################################
+
+  # MySQL only data storage container
+  mysql-data:
+    image: tianon/true
+    volumes:
+      - "./etc/databases:/var/lib/mysql"
+
+  # Backend application storage container
+  backend-app-data:
+    image: tianon/true
+    volumes:
+      - "./backend:/var/www/html"
+
+  # Frontend application storage container
+  frontend-app-data:
+    image: tianon/true
+    volumes:
+      - "./frontend:/src"
+
+
+  ####################################
+  #             SERVICES             #
+  ####################################
+
+  # MySQL server service container
+  mysql:
+    image: mysql
+    hostname: vueintranet_mysql
+    ports:
+      - "33006:3306"
+    volumes:
+      - "./etc/mysql:/etc/mysql/conf.d"
+    volumes_from:
+      - mysql-data
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: vueintranet_01
+
+  # Mailcatcher service container
+  mailcatcher:
+    hostname: vueintranet_mailcatcher
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+
+  # Redis service container
+  redis:
+    hostname: vueintranet_redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+
+  ####################################
+  #             BACKEND              #
+  ####################################
+
+  # Laravel app blue container
+  laravel:
+    build:
+      context: .
+      dockerfile: /etc/docker/laravel.dockerfile
+    volumes_from:
+      - backend-app-data
+    depends_on:
+      - mysql
+      - redis
+      - mailcatcher
+
+  ####################################
+  #            FRONTEND              #
+  ####################################
+
+  # NPM script running service container
+  nodejs:
+    build:
+      context: .
+      dockerfile: /etc/docker/nodejs.dockerfile
+    ports:
+      - "80:8080"
+    volumes_from:
+      - frontend-app-data
+    command: npm run dev
+
+
+  ####################################
+  #          LOAD BALANCER           #
+  ####################################
+
+  # Load balancer based on HAproxy service container
+  lb:
+    image: eeacms/haproxy
+    ports:
+      - "8000:5000"
+      - "1936:1936"
+    depends_on:
+      - laravel
+    environment:
+      BACKENDS: "laravel"
+      DNS_ENABLED: "true"
+      STATS_AUTH: admin:admin
+      VIRTUAL_HOST: vueintranet.dev
