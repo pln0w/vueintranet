@@ -4,8 +4,8 @@ process.env.NODE_ENV = 'production'
 
 var path = require('path')
 var ora = require('ora')
+var express = require('express')
 var rm = require('rimraf')
-var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
@@ -50,7 +50,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
     app.use(staticPath, express.static('./dist/static'))
 
-    var uri = '0.0.0.0:8080'
+    var port = process.env.PORT || config.prod.port
 
     var _resolve
     var readyPromise = new Promise(resolve => {
