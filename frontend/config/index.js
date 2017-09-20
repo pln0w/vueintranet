@@ -26,21 +26,5 @@ module.exports = {
       }
     },
     cssSourceMap: false
-  },
-  prod: {
-    env: require('./dev.env'),
-    port: 8080,
-    domain: 'http://vueintranet.dev',
-    assetsSubDirectory:  'static', // changed from static
-    assetsPublicPath: '/',
-    headers: { "Access-Control-Allow-Origin": "*" },
-    proxyTable: {
-      // proxy all requests starting with /api to http://localhost:8000
-      '/api': {
-        target: 'http://vueintranet.dev:8000',
-        changeOrigin: true
-      }
-    },
-    cssSourceMap: false
   }
 }

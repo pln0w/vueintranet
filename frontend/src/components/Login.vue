@@ -38,8 +38,8 @@
       return {
         section: 'Login',
         loading: '',
-        username: '',
-        password: '',
+        username: 'admin@admin.com',
+        password: 'secret',
         response: ''
       }
     },

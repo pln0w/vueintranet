@@ -153,10 +153,52 @@
         }
       }
     },
+    created () {
+      api.request('get', '/api/users').then(response => {
+        this.users = response.data.users
+      }).catch(error => {
+        console.log(error)
+        this.$notify({
+          title: 'Error',
+          type: 'error',
+          text: error,
+          duration: 10000
+        })
+      })
+    },
+
     methods: {
-      onSubmit () {
-        this.users.push(this.newUser)
-        // this.$http.put() ... TODO
+
+      submitForm () {
+        this.validationErrors = {}
+        api.request('post', '/api/users/create', this.newUser).then(response => {
+          if (response.data.errors) {
+            let err = response.data.errors
+            for (var i = 0; i < response.data.errors.length; i++) {
+              this.validationErrors[err[i].field] = err[i].message
+            }
+            this.$forceUpdate()
+          } else {
+            if (response.data.status) {
+              this.users.push(this.newUser)
+              this.createUserFormVisible = false
+              this.$notify({
+                title: 'Info',
+                type: 'success',
+                text: 'User successfully added',
+                duration: 10000
+              })
+            }
+          }
+        }).catch(error => {
+          console.log(error)
+          this.$notify({
+            title: 'Error',
+            type: 'error',
+            text: 'An error occured',
+            duration: 10000
+          })
+        })
       },
       onFileChange (e) {
         var files = e.target.files || e.dataTransfer.files
@@ -176,6 +218,21 @@
       },
       removeImage: function (e) {
         this.newUser.image = ''
+      },
+
+      closeModal () {
+        this.createUserFormVisible = false
+        this.newUser = {
+          first_name: '',
+          last_name: '',
+          email: '',
+          password: '',
+          image: '',
+          phone_number: '',
+          private_phone_number: '',
+          job_title: '',
+          key_skill: ''
+        }
       }
     }
   }

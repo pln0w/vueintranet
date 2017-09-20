@@ -263,4 +263,15 @@
   footer {
     height: 50px;
   }
+
+  .height-50 {
+    height: 50px;
+  }
+
+  .info-box-text {
+    font-size: 20px;
+  }
+  .info-box-number {
+    font-size: 30px;
+  }
 </style>
