@@ -11,6 +11,5 @@
 |
 */
 Route::get('/', function(){
-	dd('GET /');
-
+	return 'GET /';
 });

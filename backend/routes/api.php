@@ -13,3 +13,6 @@
 
 Route::post('/login', ['uses' => 'LoginController@login']);
 Route::get('/logout', ['uses' => 'LoginController@logout']);
+
+Route::get('/users', ['uses' => 'UsersController@index']);
+Route::post('/users/create', ['uses' => 'UsersController@store']);
