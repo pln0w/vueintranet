@@ -129,6 +129,7 @@
 <script>
   import {users} from '../../demo'
   import Modal from '../Modal.vue'
+  import api from '../../api/index'
 
   export default {
     name: 'Users',
